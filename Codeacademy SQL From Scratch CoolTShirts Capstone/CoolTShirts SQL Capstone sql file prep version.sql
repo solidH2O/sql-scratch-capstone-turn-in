@@ -1,0 +1,87 @@
+
+
+SELECT *
+FROM page_visits
+LIMIT 10;
+
+
+
+SELECT *
+FROM page_visits
+WHERE user_id = 10069
+	AND utm_source = 'buzzfeed';
+
+
+SELECT *
+FROM page_visits
+WHERE user_id = 10069;
+
+
+
+SELECT *
+FROM page_visits
+WHERE user_id = 10329;
+
+
+
+SELECT user_id,
+	MAX(timestamp) AS 'last_touch_at'
+FROM page_visits
+GROUP BY user_id;
+
+
+
+SELECT user_id,
+	MAX(timestamp) AS 'last_touch_at'
+FROM page_visits
+WHERE user_id = 10069
+GROUP BY user_id;
+
+
+
+WITH first_touch AS (
+    SELECT user_id,
+       MIN(timestamp) AS 'first_touch_at'
+    FROM page_visits
+    GROUP BY user_id)
+SELECT ft.user_id,
+   ft.first_touch_at,
+   pv.utm_source
+FROM first_touch AS 'ft'
+JOIN page_visits AS 'pv'
+   ON ft.user_id = pv.user_id
+   AND ft.first_touch_at = pv.timestamp;
+
+
+
+WITH last_touch AS (
+    SELECT user_id,
+       MAX(timestamp) AS 'last_touch_at'
+    FROM page_visits
+    GROUP BY user_id)
+SELECT lt.user_id,
+   lt.last_touch_at,
+   pv.utm_source
+FROM last_touch AS 'lt'
+JOIN page_visits AS 'pv'
+   ON lt.user_id = pv.user_id
+   AND lt.last_touch_at = pv.timestamp;
+
+
+
+WITH last_touch AS (
+    SELECT user_id,
+       MAX(timestamp) AS 'last_touch_at'
+    FROM page_visits
+    GROUP BY user_id)
+SELECT lt.user_id,
+   lt.last_touch_at,
+   pv.utm_source
+FROM last_touch AS 'lt'
+JOIN page_visits AS 'pv'
+   ON lt.user_id = pv.user_id
+   AND lt.last_touch_at = pv.timestamp
+WHERE lt.user_id = 10069;
+
+
+
